@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace RaceDay.API.CSharp.Models
 {
@@ -9,7 +10,7 @@ namespace RaceDay.API.CSharp.Models
         [Key]
         public int CategoryID { get; set; }
 
-    [Required]
+        [Required]
         public int EventID { get; set; }
 
         [Required]
@@ -27,8 +28,7 @@ namespace RaceDay.API.CSharp.Models
         public decimal CategoryFee { get; set; }
 
         [ForeignKey(nameof(EventID))]
+        [JsonIgnore]
         public Event? Event { get; set; }
     }
-
-
 }

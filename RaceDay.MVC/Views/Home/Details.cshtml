@@ -1,0 +1,158 @@
+@using Microsoft.AspNetCore.Http
+@model RaceDay.MVC.Models.EventDetailsViewModel
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = Model.Event.EventName;
+
+    var apiBaseUrl = Configuration["Api:BaseUrl"]?.TrimEnd('/');
+    var bannerUrl = !string.IsNullOrWhiteSpace(Model.Event.BannerImagePath)
+        && !string.IsNullOrWhiteSpace(apiBaseUrl)
+            ? $"{apiBaseUrl}/api/images/file/{Model.Event.BannerImagePath}"
+            : null;
+
+    var isParticipant =
+        Context.Session.GetString("Role") == "Participant";
+}
+
+<div class="container py-4">
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="alert alert-success">@successMessage</div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="btn btn-outline-secondary mb-3">
+        Back to events
+    </a>
+
+    @if (bannerUrl != null)
+    {
+        <img src="@bannerUrl"
+             alt="Banner for @Model.Event.EventName"
+             class="img-fluid rounded mb-4"
+             style="width: 100%; max-height: 400px; object-fit: cover;" />
+    }
+
+    <h1>@Model.Event.EventName</h1>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Event.Description))
+    {
+        <p class="lead">@Model.Event.Description</p>
+    }
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Date:</strong> @Model.Event.EventDate.ToString("dd MMM yyyy")</p>
+            <p><strong>Start time:</strong> @Model.Event.StartTime</p>
+            <p><strong>Location:</strong> @Model.Event.Venue, @Model.Event.City, @Model.Event.Province</p>
+            <p><strong>Distance:</strong> @Model.Event.DistanceKM km</p>
+            <p class="mb-0"><strong>Type:</strong> @Model.Event.EventType</p>
+        </div>
+    </div>
+
+    <h2 class="h4">Available categories</h2>
+
+    @if (Model.Categories == null || Model.Categories.Count == 0)
+    {
+        <div class="alert alert-info">
+            No categories have been added to this event yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive mb-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Age range</th>
+                        <th>Entry fee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <tr>
+                            <td>@category.CategoryName</td>
+                            <td>@category.Description</td>
+                            <td>@category.AgeMinimum–@category.AgeMaximum</td>
+                            <td>@category.CategoryFee.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (isParticipant && Model.Categories != null && Model.Categories.Count > 0)
+    {
+        <section class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Enrol in this event</h2>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Home" asp-action="Enrol" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="EventID" value="@Model.Event.EventID" />
+
+                    <div class="mb-3">
+                        <label for="CategoryID" class="form-label">Choose a category</label>
+                        <select id="CategoryID"
+                                name="CategoryID"
+                                class="form-select"
+                                required>
+                            <option value="">Select a category</option>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.CategoryID">
+                                    @category.CategoryName — @category.CategoryFee.ToString("C")
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="EmergencyContactName" class="form-label">
+                            Emergency contact name
+                        </label>
+                        <input id="EmergencyContactName"
+                               name="EmergencyContactName"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="EmergencyContactPhone" class="form-label">
+                            Emergency contact phone
+                        </label>
+                        <input id="EmergencyContactPhone"
+                               name="EmergencyContactPhone"
+                               type="tel"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Enrol in event
+                    </button>
+                </form>
+            </div>
+        </section>
+    }
+    else if (Context.Session.GetString("UserId") == null)
+    {
+        <div class="alert alert-info">
+            <a asp-controller="Account" asp-action="Login">Log in</a>
+            as a participant to enrol in this event.
+        </div>
+    }
+</div>

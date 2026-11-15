@@ -1,0 +1,125 @@
+﻿@model List<RaceDay.MVC.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "Upcoming Events";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">Upcoming RaceDay Events</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-8 mb-2">
+            <label for="eventSearch" class="form-label">Search events</label>
+            <input id="eventSearch"
+                   type="search"
+                   class="form-control"
+                   placeholder="Search by event name or city" />
+        </div>
+        <div class="col-md-4 mb-2">
+            <label for="eventTypeFilter" class="form-label">Event type</label>
+            <select id="eventTypeFilter" class="form-select">
+                <option value="">All event types</option>
+                <option value="Running">Running</option>
+                <option value="Walking">Walking</option>
+                <option value="Cycling">Cycling</option>
+            </select>
+        </div>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <p>No events are available right now.</p>
+    }
+    else
+    {
+        <div id="eventList" class="row">
+            @foreach (var raceEvent in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4 event-card"
+                     data-name="@raceEvent.EventName"
+                     data-city="@raceEvent.City"
+                     data-type="@raceEvent.EventType"
+                     data-date="@raceEvent.EventDate.ToString("yyyy-MM-dd")">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title h5">@raceEvent.EventName</h2>
+
+                            @if (!string.IsNullOrWhiteSpace(raceEvent.Description))
+                            {
+                                <p class="card-text">@raceEvent.Description</p>
+                            }
+
+                            <p class="mb-1">
+                                <strong>Date:</strong>
+                                @raceEvent.EventDate.ToString("dd MMM yyyy")
+                            </p>
+                            <p class="mb-1">
+                                <strong>Location:</strong>
+                                @raceEvent.Venue, @raceEvent.City
+                            </p>
+                            <p class="mb-0">
+                                <strong>Race:</strong>
+                                @raceEvent.DistanceKM km · @raceEvent.EventType
+                            </p>
+
+                            <a asp-controller="Home"
+                               asp-action="Details"
+                               asp-route-id="@raceEvent.EventID"
+                               class="btn btn-primary mt-3">
+                                View details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <p id="noMatchingEvents" class="alert alert-info d-none">
+            No upcoming events match your filters.
+        </p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        const searchBox = document.getElementById("eventSearch");
+        const typeFilter = document.getElementById("eventTypeFilter");
+        const cards = document.querySelectorAll(".event-card");
+        const noMatches = document.getElementById("noMatchingEvents");
+
+        function filterEvents() {
+            const search = searchBox.value.trim().toLowerCase();
+            const selectedType = typeFilter.value.toLowerCase();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const city = card.dataset.city.toLowerCase();
+                const type = card.dataset.type.toLowerCase();
+                const eventDate = new Date(card.dataset.date + "T00:00:00");
+
+                const matchesSearch =
+                    name.includes(search) || city.includes(search);
+                const matchesType =
+                    selectedType === "" || type === selectedType;
+                const isUpcoming = eventDate >= today;
+                const isVisible = matchesSearch && matchesType && isUpcoming;
+
+                card.classList.toggle("d-none", !isVisible);
+
+                if (isVisible)
+                    visibleCount++;
+            });
+
+            if (noMatches)
+                noMatches.classList.toggle("d-none", visibleCount !== 0);
+        }
+
+        searchBox.addEventListener("input", filterEvents);
+        typeFilter.addEventListener("change", filterEvents);
+        filterEvents();
+    </script>
+}

@@ -143,10 +143,15 @@ namespace RaceDay.API.CSharp.Controllers
                     r.ResultID,
                     r.EnrolmentID,
                     EventName = r.Enrolment!.Category!.Event!.EventName,
-                    CategoryName = r.Enrolment!.Category!.CategoryName,
+                    EventDate = r.Enrolment.Category.Event.EventDate,
+                    CategoryName = r.Enrolment.Category.CategoryName,
                     r.FinishPosition,
                     r.FinishTime,
                     r.ResultStatus,
+                    FinisherCount = _context.Results.Count(other =>
+                        other.ResultStatus == "Finished" &&
+                        other.Enrolment!.Category!.EventID ==
+                            r.Enrolment!.Category!.EventID),
                     r.RecordedDate
                 })
                 .ToListAsync();

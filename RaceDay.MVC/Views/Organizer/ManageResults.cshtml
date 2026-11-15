@@ -1,0 +1,114 @@
+@model List<RaceDay.MVC.Models.EnrolmentViewModel>
+
+@{
+    var eventId = (int)ViewBag.EventId;
+    ViewData["Title"] = "Manage Results";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Manage results</h1>
+            <p class="text-muted mb-0">Event ID: @eventId</p>
+        </div>
+
+        <a asp-controller="Organizer"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary">
+            Back to dashboard
+        </a>
+    </div>
+
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="alert alert-success">@successMessage</div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            There are no enrolled participants to record results for yet.
+        </div>
+    }
+    else
+    {
+        @foreach (var enrolment in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>@enrolment.ParticipantName</strong>
+                    <span class="text-muted">— @enrolment.CategoryName</span>
+                </div>
+
+                <div class="card-body">
+                    <form asp-controller="Organizer"
+                          asp-action="CreateResult"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="eventId"
+                               value="@eventId" />
+
+                        <input type="hidden"
+                               name="EnrolmentID"
+                               value="@enrolment.EnrolmentID" />
+
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label for="position-@enrolment.EnrolmentID"
+                                       class="form-label">
+                                    Finish position
+                                </label>
+                                <input id="position-@enrolment.EnrolmentID"
+                                       name="FinishPosition"
+                                       type="number"
+                                       min="1"
+                                       class="form-control" />
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="time-@enrolment.EnrolmentID"
+                                       class="form-label">
+                                    Finish time
+                                </label>
+                                <input id="time-@enrolment.EnrolmentID"
+                                       name="FinishTime"
+                                       type="text"
+                                       placeholder="01:25:34"
+                                       pattern="[0-9]{1,2}:[0-5][0-9]:[0-5][0-9]"
+                                       class="form-control" />
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="status-@enrolment.EnrolmentID"
+                                       class="form-label">
+                                    Result status
+                                </label>
+                                <select id="status-@enrolment.EnrolmentID"
+                                        name="ResultStatus"
+                                        class="form-select">
+                                    <option value="Finished">Finished</option>
+                                    <option value="DidNotFinish">Did not finish</option>
+                                    <option value="Disqualified">Disqualified</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Save result
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+</div>

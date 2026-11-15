@@ -11,8 +11,7 @@ namespace RaceDay.API.CSharp.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
 
-
-    [Required]
+        [Required]
         [MaxLength(50)]
         public string FirstName { get; set; } = string.Empty;
 
@@ -35,9 +34,9 @@ namespace RaceDay.API.CSharp.Models
         [MaxLength(20)]
         public string? PhoneNumber { get; set; }
 
+        [MaxLength(500)]
+        public string? ProfilePicturePath { get; set; }
+
         public DateTime DateRegistered { get; set; } = DateTime.Now;
     }
-
-
 }
-

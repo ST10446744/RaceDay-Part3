@@ -11,8 +11,7 @@ namespace RaceDay.API.CSharp.Models
         [Key]
         public int EventID { get; set; }
 
-
-    [Required]
+        [Required]
         public int OrganiserID { get; set; }
 
         [Required]
@@ -56,6 +55,9 @@ namespace RaceDay.API.CSharp.Models
         [MaxLength(20)]
         public string Status { get; set; } = "Upcoming";
 
+        [MaxLength(500)]
+        public string? BannerImagePath { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [ForeignKey(nameof(OrganiserID))]
@@ -64,6 +66,4 @@ namespace RaceDay.API.CSharp.Models
         public ICollection<Category> Categories { get; set; }
             = new List<Category>();
     }
-
-
 }

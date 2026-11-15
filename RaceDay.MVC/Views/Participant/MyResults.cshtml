@@ -1,0 +1,59 @@
+@model List<RaceDay.MVC.Models.PersonalResultViewModel>
+
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">My Results</h1>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            You do not have any recorded race results yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Finish time</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var result in Model)
+                    {
+                        <tr>
+                            <td>@result.EventName</td>
+                            <td>@result.EventDate.ToString("dd MMM yyyy")</td>
+                            <td>@result.CategoryName</td>
+                            <td>@(result.FinishTime?.ToString() ?? "—")</td>
+                            <td>
+                                @if (result.FinishPosition.HasValue)
+                                {
+                                    <span>@result.FinishPosition of @result.FinisherCount finishers</span>
+                                }
+                                else
+                                {
+                                    <span>Not recorded</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @(result.ResultStatus.Equals("Finished", StringComparison.OrdinalIgnoreCase) ? "bg-success" : "bg-secondary")">
+                                    @result.ResultStatus
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -45,7 +45,8 @@ namespace RaceDay.API.CSharp.Controllers
                     u.Email,
                     u.Role,
                     u.PhoneNumber,
-                    u.DateRegistered
+                    u.DateRegistered,
+                    u.ProfilePicturePath
                 })
                 .FirstOrDefaultAsync();
 

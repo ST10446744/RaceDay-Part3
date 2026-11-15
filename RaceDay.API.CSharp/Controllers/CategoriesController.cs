@@ -18,17 +18,15 @@ namespace RaceDay.API.CSharp.Controllers
         }
 
         // GET: api/events/1/categories
+        // Anyone can view an event's categories.
         [HttpGet("api/events/{eventId:int}/categories")]
-        [Authorize]
         public async Task<IActionResult> GetCategories(int eventId)
         {
             var eventExists = await _context.Events
                 .AnyAsync(e => e.EventID == eventId);
 
             if (!eventExists)
-            {
                 return NotFound("Event not found.");
-            }
 
             var categories = await _context.Categories
                 .AsNoTracking()
@@ -39,6 +37,7 @@ namespace RaceDay.API.CSharp.Controllers
         }
 
         // POST: api/events/1/categories
+        // Only the event's organiser can add a category.
         [HttpPost("api/events/{eventId:int}/categories")]
         [Authorize(Roles = "Organiser")]
         public async Task<IActionResult> CreateCategory(
@@ -46,31 +45,22 @@ namespace RaceDay.API.CSharp.Controllers
             Category category)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
+                ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdClaim, out int organiserId))
-            {
                 return Unauthorized();
-            }
 
             var eventItem = await _context.Events
                 .FirstOrDefaultAsync(e => e.EventID == eventId);
 
             if (eventItem == null)
-            {
                 return NotFound("Event not found.");
-            }
 
             if (eventItem.OrganiserID != organiserId)
-            {
                 return Forbid();
-            }
 
             category.CategoryID = 0;
             category.EventID = eventId;
@@ -81,11 +71,11 @@ namespace RaceDay.API.CSharp.Controllers
 
             return Created(
                 $"/api/events/{eventId}/categories",
-                category
-            );
+                category);
         }
 
         // PUT: api/categories/1
+        // Only the event's organiser can update its category.
         [HttpPut("api/categories/{id:int}")]
         [Authorize(Roles = "Organiser")]
         public async Task<IActionResult> UpdateCategory(
@@ -93,41 +83,28 @@ namespace RaceDay.API.CSharp.Controllers
             Category updatedCategory)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
+                ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdClaim, out int organiserId))
-            {
                 return Unauthorized();
-            }
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
-            {
                 return NotFound("Category not found.");
-            }
 
             var eventItem = await _context.Events
-                .FirstOrDefaultAsync(
-                    e => e.EventID == category.EventID
-                );
+                .FirstOrDefaultAsync(e => e.EventID == category.EventID);
 
             if (eventItem == null)
-            {
                 return NotFound("The category's event was not found.");
-            }
 
             if (eventItem.OrganiserID != organiserId)
-            {
                 return Forbid();
-            }
 
             category.CategoryName = updatedCategory.CategoryName;
             category.Description = updatedCategory.Description;
@@ -141,41 +118,31 @@ namespace RaceDay.API.CSharp.Controllers
         }
 
         // DELETE: api/categories/1
+        // Only the event's organiser can delete its category.
         [HttpDelete("api/categories/{id:int}")]
         [Authorize(Roles = "Organiser")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
+                ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdClaim, out int organiserId))
-            {
                 return Unauthorized();
-            }
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(c => c.CategoryID == id);
 
             if (category == null)
-            {
                 return NotFound("Category not found.");
-            }
 
             var eventItem = await _context.Events
-                .FirstOrDefaultAsync(
-                    e => e.EventID == category.EventID
-                );
+                .FirstOrDefaultAsync(e => e.EventID == category.EventID);
 
             if (eventItem == null)
-            {
                 return NotFound("The category's event was not found.");
-            }
 
             if (eventItem.OrganiserID != organiserId)
-            {
                 return Forbid();
-            }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();

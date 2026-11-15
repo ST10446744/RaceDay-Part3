@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.CSharp.Data;
+using RaceDay.API.CSharp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register controllers
 builder.Services.AddControllers();
+builder.Services.AddSingleton<AzureBlobStorageService>();
 
 // Register Swagger
 builder.Services.AddEndpointsApiExplorer();

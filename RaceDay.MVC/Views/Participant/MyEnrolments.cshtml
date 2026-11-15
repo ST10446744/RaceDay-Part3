@@ -1,0 +1,56 @@
+@model List<RaceDay.MVC.Models.EnrolmentViewModel>
+
+@{
+    ViewData["Title"] = "My Enrolments";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">My Enrolments</h1>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            You have not enrolled in any events yet.
+            <a asp-controller="Home" asp-action="Index">Browse upcoming events</a>.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Category</th>
+                        <th>Enrolled</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var enrolment in Model)
+                    {
+                        var statusClass =
+                            enrolment.EnrolmentStatus.Equals(
+                                "Confirmed",
+                                StringComparison.OrdinalIgnoreCase)
+                                ? "bg-success"
+                                : "bg-warning text-dark";
+
+                        <tr>
+                            <td>@enrolment.EventName</td>
+                            <td>@enrolment.CategoryName</td>
+                            <td>@enrolment.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <span class="badge @statusClass">
+                                    @enrolment.EnrolmentStatus
+                                </span>
+                            </td>
+                            <td>@enrolment.PaymentStatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -30,6 +30,26 @@ namespace RaceDay.API.CSharp.Controllers
             return Ok(events);
         }
 
+        // GET: api/events/mine
+        // Organisers can view only their own events.
+        [HttpGet("mine")]
+        [Authorize(Roles = "Organiser")]
+        public async Task<IActionResult> GetMyEvents()
+        {
+            var userIdClaim = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdClaim, out int organiserId))
+                return Unauthorized();
+
+            var events = await _context.Events
+                .AsNoTracking()
+                .Where(e => e.OrganiserID == organiserId)
+                .ToListAsync();
+
+            return Ok(events);
+        }
+
         // GET: api/events/1
         // Anyone can view one event.
         [HttpGet("{id:int}")]
@@ -40,9 +60,7 @@ namespace RaceDay.API.CSharp.Controllers
                 .FirstOrDefaultAsync(e => e.EventID == id);
 
             if (eventItem == null)
-            {
                 return NotFound("Event not found.");
-            }
 
             return Ok(eventItem);
         }
@@ -54,18 +72,13 @@ namespace RaceDay.API.CSharp.Controllers
         public async Task<IActionResult> CreateEvent(Event eventItem)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
+                ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdClaim, out int organiserId))
-            {
                 return Unauthorized();
-            }
 
             eventItem.OrganiserID = organiserId;
             eventItem.Organiser = null;
@@ -76,8 +89,7 @@ namespace RaceDay.API.CSharp.Controllers
             return CreatedAtAction(
                 nameof(GetEvent),
                 new { id = eventItem.EventID },
-                eventItem
-            );
+                eventItem);
         }
 
         // PUT: api/events/1
@@ -89,31 +101,22 @@ namespace RaceDay.API.CSharp.Controllers
             Event updatedEvent)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
+                ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdClaim, out int organiserId))
-            {
                 return Unauthorized();
-            }
 
             var existingEvent = await _context.Events
                 .FirstOrDefaultAsync(e => e.EventID == id);
 
             if (existingEvent == null)
-            {
                 return NotFound("Event not found.");
-            }
 
             if (existingEvent.OrganiserID != organiserId)
-            {
                 return Forbid();
-            }
 
             existingEvent.EventName = updatedEvent.EventName;
             existingEvent.Description = updatedEvent.Description;
@@ -141,26 +144,19 @@ namespace RaceDay.API.CSharp.Controllers
         public async Task<IActionResult> DeleteEvent(int id)
         {
             var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
+                ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdClaim, out int organiserId))
-            {
                 return Unauthorized();
-            }
 
             var eventItem = await _context.Events
                 .FirstOrDefaultAsync(e => e.EventID == id);
 
             if (eventItem == null)
-            {
                 return NotFound("Event not found.");
-            }
 
             if (eventItem.OrganiserID != organiserId)
-            {
                 return Forbid();
-            }
 
             _context.Events.Remove(eventItem);
             await _context.SaveChangesAsync();
