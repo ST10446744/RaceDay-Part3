@@ -1,359 +1,433 @@
-# 🏃 RaceDay Event Management System
+# 🏃 RaceDay – Event Management System
 
-> **A digital event management system for running, walking and cycling events.**
+> **A comprehensive digital event management platform for road running, walking and cycling events.**
 
----
+RaceDay is a full-stack event management system developed to simplify the planning, administration and management of sporting events.
 
-## 📌 Project Overview
+The platform provides functionality for event organisers and participants through a centralised system consisting of a relational database, RESTful Web API and MVC web application.
 
-**RaceDay** is an event management system designed to support the planning, administration and participation of **road running, walking and cycling events**.
-
-The system provides a structured digital solution for managing event information, participant registrations, categories, results, payments, supporting documents and other information required throughout the event lifecycle.
-
-This project is being developed as part of a **Portfolio of Evidence (PoE)** using an incremental development approach.
+The project is developed using an incremental software development approach across three Portfolio of Evidence (PoE) submissions.
 
 ---
+
+# 📌 Project Overview
+
+RaceDay aims to provide a structured digital solution for managing the complete lifecycle of sporting events.
+
+The platform supports event creation, participant registrations, category management, results, payments, user profiles, supporting documents and image management.
+
+The system follows a layered architecture, separating the presentation layer, API, business logic and database responsibilities.
+
+Development is divided into three main stages:
+
+| Part | Description | Main Technologies |
+|---|---|---|
+| Part 1 | System Planning & Database Design | SQL Server, SQL, ERD |
+| Part 2 | RESTful API Development | C#, ASP.NET Core, EF Core |
+| Part 3 | MVC Application & Cloud Integration | ASP.NET Core MVC, Azure Blob Storage, Docker |
 
 ## 🎯 Project Objectives
 
 The main objectives of RaceDay are to:
 
-* 👤 Manage user accounts and user roles
-* 🏁 Create and manage sporting events
-* 🏷️ Manage event categories
-* 📝 Manage participant enrolments
-* 🏆 Record and manage event results
-* 📄 Manage event-related documents
-* 💳 Record payment information
-* 🌦️ Store event weather information
-* 🔐 Provide secure authentication and authorisation
-* 🌐 Provide RESTful API functionality
-* 🗄️ Store application data using a relational database
+- Manage user accounts and user roles.
+- Provide secure authentication and authorisation.
+- Allow organisers to create and manage sporting events.
+- Manage event categories.
+- Support participant registrations and enrolments.
+- Record and manage event results.
+- Manage event-related documents and images.
+- Support profile pictures and user profile management.
+- Record payment information.
+- Store event weather information.
+- Provide RESTful API functionality.
+- Connect the MVC application to the backend API.
+- Integrate cloud-based file storage.
+- Containerise application components using Docker.
+- Maintain a structured and maintainable software architecture.
 
 ---
 
-# 📚 Part 1 — System Planning & Database Design
+# 📚 PART 1 – System Planning & Database Design
 
-Part 1 establishes the technical foundation of the RaceDay system.
+Part 1 establishes the foundation of the RaceDay system through database planning, requirements analysis and API design.
 
-The completed work includes:
+The objective was to design a relational database capable of supporting the functionality required by the event management platform.
 
-| Component        | Description                               | Status |
-| ---------------- | ----------------------------------------- | :----: |
-| 🗄️ Database     | Relational database design and SQL script |    ✅   |
-| 🔗 ERD           | Entity Relationship Diagram               |    ✅   |
-| 🌐 API Design    | RESTful API endpoint specification        |    ✅   |
-| 📝 Documentation | Project documentation                     |    ✅   |
-| 🐙 GitHub        | Version-controlled project repository     |    ✅   |
+## Completed Components
 
----
+| Component | Description | Status |
+|---|---|:---:|
+| Database Design | Relational database structure | ✅ |
+| SQL Script | Database creation and configuration | ✅ |
+| Entity Relationship Diagram | Database relationships and structure | ✅ |
+| API Planning | RESTful endpoint specification | ✅ |
+| Documentation | Technical project documentation | ✅ |
+| GitHub | Source control and repository setup | ✅ |
 
-# 🗄️ Database Design
+## 🗄️ Database Design
 
-The RaceDay database uses a **relational database structure** to store and manage information required by the application.
+The RaceDay database uses Microsoft SQL Server as its relational database management system.
 
-### Main Entities
+The database is designed to maintain relationships between users, events, participants and other event-related information.
 
-* 👤 **Users**
-* 🏁 **Events**
-* 🏷️ **Categories**
-* 📝 **Enrolments**
-* 🏆 **Results**
-* 📄 **Event Documents**
-* 💳 **Payments**
-* 🌦️ **Weather Information**
+### Main Database Entities
 
-The database relationships allow information to be connected between users, events, participants, categories, results, payments and other event-related information.
+- Users
+- Events
+- Categories
+- Enrolments
+- Results
+- Event Documents
+- Payments
+- Weather Information
 
-### Database Script
+The database design uses primary keys, foreign keys and relational constraints to maintain data integrity.
 
-The SQL database script contains the SQL statements required to create the RaceDay database structure.
+Entity relationships allow the application to associate participants with events, categories, enrolments and results.
 
-📁 **Location:**
+### Database Documentation
 
-```text
-docs/RaceDay_Database.sql
-```
+**SQL Database Script**
 
----
+`docs/RaceDay_Database.sql`
 
-# 🔗 Entity Relationship Diagram
+**Entity Relationship Diagram**
 
-The **Entity Relationship Diagram (ERD)** provides a visual representation of the RaceDay database structure.
+`docs/RaceDay_ERD.png`
+
+## 🔗 Entity Relationship Diagram
+
+The ERD provides a visual representation of the database structure.
 
 It identifies:
 
-* Entities
-* Attributes
-* Primary keys
-* Foreign keys
-* Relationships
-* Database structure
+- Database entities.
+- Attributes.
+- Primary keys.
+- Foreign keys.
+- Relationships.
+- Relationship cardinalities.
 
-The ERD was used as a reference when creating the SQL database.
+The ERD serves as the foundation for the SQL database implementation.
 
-📁 **Location:**
+## 🌐 API Endpoint Planning
+
+Part 1 also established the planned RESTful API structure.
+
+The API specification covers:
+
+- Authentication.
+- User management.
+- Event management.
+- Category management.
+- Participant enrolments.
+- Results.
+- Payments.
+- Event documents.
+- Weather information.
+
+**API Documentation:**
+
+`docs/RaceDay_API_Endpoint_Plan.docx`
+
+---
+
+# ⚙️ PART 2 – RESTful API Development
+
+Part 2 focuses on implementing the backend functionality using C# and ASP.NET Core Web API.
+
+The API provides the central communication layer between the database and the client applications.
+
+It handles incoming HTTP requests, processes application logic, communicates with the database and returns structured responses.
+
+## 🛠️ Backend Technologies
+
+| Technology | Purpose |
+|---|---|
+| C# | Backend programming language |
+| ASP.NET Core Web API | RESTful API development |
+| .NET 8 | Application framework |
+| Entity Framework Core | Object-relational mapping |
+| Microsoft SQL Server | Relational database |
+| EF Core Migrations | Database schema management |
+| Swagger / OpenAPI | API documentation and testing |
+| xUnit | Automated testing |
+
+## 🌐 RESTful API Functionality
+
+The backend implements RESTful endpoints using standard HTTP methods.
+
+| HTTP Method | Purpose |
+|---|---|
+| GET | Retrieve information |
+| POST | Create records |
+| PUT | Update existing records |
+| DELETE | Remove records |
+
+### Main API Modules
+
+The API is organised into controllers responsible for different areas of the application.
+
+- Authentication Controller
+- Categories Controller
+- Enrolments Controller
+- Events Controller
+- Payment Controller
+- Profile Controller
+- Results Controller
+- Images Controller
+
+Each controller is responsible for handling requests associated with its respective functionality.
+
+## 🔐 Authentication & Authorisation
+
+RaceDay implements role-based access control to separate organiser and participant functionality.
+
+### Organiser
+
+Organisers are responsible for managing sporting events.
+
+Functionality includes:
+
+- Creating events.
+- Updating event information.
+- Managing event categories.
+- Viewing participant information.
+- Managing event-related information.
+- Managing results.
+
+### Participant
+
+Participants interact with the platform to access sporting events.
+
+Functionality includes:
+
+- Creating an account.
+- Logging into the platform.
+- Viewing available events.
+- Registering for events.
+- Managing enrolments.
+- Viewing relevant results.
+- Managing profile information.
+
+Access to protected functionality is controlled through authentication and authorisation.
+
+## 🗄️ Entity Framework Core
+
+Entity Framework Core is used to manage communication between the application and SQL Server.
+
+The project uses a Code-First development approach.
+
+This allows database structures to be represented through C# entity models.
+
+Database migrations are used to introduce and maintain changes to the database schema.
+
+Examples include:
+
+- User model changes.
+- Event model changes.
+- Category model changes.
+- Image path additions.
+- Profile picture path additions.
+
+## 🧪 Testing
+
+Automated testing is included to verify application functionality and reduce the possibility of regressions.
+
+The project uses unit testing to test important application components.
+
+Testing focuses on:
+
+- API functionality.
+- Application logic.
+- Data handling.
+- Expected responses.
+- Validation and error handling.
+
+## ⚙️ Continuous Integration
+
+GitHub Actions is used to automate development checks.
+
+The workflow supports:
+
+- Building the application.
+- Restoring dependencies.
+- Running automated tests.
+- Identifying build failures.
+
+The purpose is to maintain application quality throughout development.
+
+---
+
+# 🚀 PART 3 – MVC Application, Azure Blob Storage & Docker
+
+Part 3 expands RaceDay beyond a standalone backend API by introducing a separate MVC web application and cloud-based file storage.
+
+The objective is to create a more complete application architecture in which users interact with a web interface while the MVC application communicates with the backend API.
+
+This stage also introduces containerisation to improve application deployment and consistency.
+
+## 🏗️ Part 3 Architecture
+
+The application follows a multi-layer architecture.
 
 ```text
-docs/RaceDay_ERD.png
+             USER
+              |
+              ▼
+    ┌─────────────────────┐
+    │    RaceDay MVC      │
+    │   ASP.NET Core      │
+    │   Web Application   │
+    └──────────┬──────────┘
+               |
+               │ HTTP Requests
+               ▼
+    ┌─────────────────────┐
+    │   RaceDay API       │
+    │   ASP.NET Core      │
+    │   RESTful Services  │
+    └──────────┬──────────┘
+               |
+        ┌──────┴──────┐
+        |             |
+        ▼             ▼
+┌──────────────┐ ┌───────────────┐
+│ SQL Server   │ │ Azure Blob    │
+│ Database     │ │ Storage       │
+└──────────────┘ └───────────────┘
+
+          Docker
+    Application Containers
 ```
 
----
+The architecture separates user interaction, backend processing, database operations and cloud-based file storage.
 
-# 🌐 RESTful API
+## 🖥️ ASP.NET Core MVC Application
 
-The RaceDay API has been planned using **RESTful API principles**.
+The RaceDay MVC project introduces the presentation layer of the system.
 
-The API provides a structured way for the application to communicate with the backend and database.
+The MVC application provides the user-facing interface through which organisers and participants interact with RaceDay.
 
-### HTTP Methods
+The Model-View-Controller architectural pattern separates application responsibilities into three components:
 
-| Method   | Purpose                     |
-| -------- | --------------------------- |
-| `GET`    | Retrieve information        |
-| `POST`   | Create new information      |
-| `PUT`    | Update existing information |
-| `DELETE` | Remove information          |
+| Component | Responsibility |
+|---|---|
+| Model | Represents application data |
+| View | Displays the user interface |
+| Controller | Handles user requests and application flow |
 
-### Planned API Areas
+The MVC application communicates with the backend API rather than directly managing database operations.
 
-The endpoint specification covers functionality including:
+This separation improves maintainability and allows the backend and frontend to evolve independently.
 
-* 🔐 Authentication
-* 👤 User registration
-* 🏁 Event management
-* 🏷️ Category management
-* 📝 Event enrolments
-* 🏆 Results
-* 📄 Event documents
-* 💳 Payments
-* 🌦️ Weather information
+### MVC Responsibilities
 
-📁 **API Documentation:**
+- User-facing application interface.
+- Communication with the RaceDay API.
+- User registration and login workflows.
+- Event information and management interfaces.
+- Participant functionality.
+- Organiser functionality.
+- User profile management.
+- Image and profile picture functionality.
 
-```text
-docs/RaceDay_API_Endpoint_Plan.docx
-```
+## ☁️ Azure Blob Storage Integration
 
----
+Azure Blob Storage is introduced as the cloud storage solution for application files.
 
-# 🔐 Authentication & Authorisation
+Blob Storage provides scalable object storage for unstructured data such as images and documents.
 
-RaceDay is designed around role-based access.
+Within RaceDay, cloud storage supports the management of event-related files and user images.
 
-## 👨‍💼 Organiser
+### Intended Storage Responsibilities
 
-Organisers will manage event-related functionality.
+- Event images.
+- User profile pictures.
+- Supporting event documents.
+- Other application-related files.
 
-Planned functionality includes:
+The database maintains relevant file metadata and storage references, while the actual files are managed through cloud storage.
 
-* Create events
-* Update events
-* Manage event information
-* Manage event categories
-* View participant information
-* Manage event documents
-* Manage event results
+This approach separates file storage from relational database records.
 
-## 🏃 Participant
+## 🖼️ Image Management
 
-Participants will interact with available events.
+Part 3 extends the backend with image-related functionality.
 
-Planned functionality includes:
+The project includes an ImagesController and additional database migrations supporting image paths and profile picture information.
 
-* Create an account
-* Register for events
-* View available events
-* View event information
-* Manage enrolments
-* View relevant results
-* Access relevant payment information
+Image management allows the application to associate uploaded images with relevant application records.
 
-Authentication and authorisation will be implemented during the API development stage.
+Relevant implementation components include:
 
----
+- ImagesController.
+- Image-related services.
+- Profile picture functionality.
+- Image path database fields.
+- Entity Framework Core migrations.
 
-# 🏗️ System Architecture
+## 🐳 Docker Containerisation
 
-The planned RaceDay architecture follows a layered approach:
+Docker is introduced to support application containerisation.
 
-```text
-┌──────────────────────────┐
-│     Client Application   │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│     RESTful Web API      │
-│       ASP.NET Core       │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│    Application Logic     │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│     Entity Framework     │
-│           Core           │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│      SQL Server DB       │
-└──────────────────────────┘
-```
+Containerisation packages an application and its required dependencies into a consistent runtime environment.
 
-This structure separates the client, API, application logic and database responsibilities.
+This helps reduce differences between development and deployment environments.
+
+Docker is used as part of the deployment architecture for the RaceDay application.
+
+The containerisation approach supports:
+
+- Consistent application environments.
+- Easier application deployment.
+- Dependency isolation.
+- Repeatable builds.
+- Improved portability.
+
+## 🔄 Part 3 Development Objectives
+
+| Component | Description |
+|---|---|
+| MVC Application | Separate ASP.NET Core MVC frontend |
+| API Integration | MVC communication with backend API |
+| Azure Blob Storage | Cloud-based file storage |
+| Image Management | Event and user image functionality |
+| Profile Pictures | User profile image support |
+| Database Migrations | Additional image-related database fields |
+| Docker | Application containerisation |
 
 ---
 
-# 🛠️ Technologies
+# 🔐 Security Architecture
 
-The RaceDay project uses or is planned to use:
+Security is an important consideration throughout RaceDay development.
 
-| Technology                   | Purpose                                |
-| ---------------------------- | -------------------------------------- |
-| 💻 **C#**                    | Backend programming language           |
-| 🌐 **ASP.NET Core Web API**  | RESTful backend                        |
-| 🗄️ **Microsoft SQL Server** | Relational database                    |
-| 🔗 **Entity Framework Core** | Database access and ORM                |
-| 🔐 **Authentication**        | User authentication and access control |
-| 🧪 **Unit Testing**          | Testing application functionality      |
-| 🐙 **Git**                   | Version control                        |
-| 🐙 **GitHub**                | Source code repository                 |
-| ⚙️ **GitHub Actions**        | CI/CD automation                       |
+The application separates authentication from authorisation.
 
----
+Authentication establishes the identity of a user, while authorisation determines which resources and operations that user can access.
 
-# 📂 Repository Structure
+Security considerations include:
 
-The current repository is organised as follows:
+- User authentication.
+- Role-based access control.
+- Protected API endpoints.
+- Input validation.
+- Secure password handling.
+- Database integrity.
+- Controlled access to application resources.
+- Secure configuration of connection strings and cloud credentials.
 
-```text
-RaceDay/
-│
-├── 📁 docs/
-│   ├── 📄 RaceDay_API_Endpoint_Plan.docx
-│   ├── 🗄️ RaceDay_Database.sql
-│   └── 🖼️ RaceDay_ERD.png
-│
-└── 📄 README.md
-```
-
-The repository will expand as additional development stages are completed.
+Sensitive credentials should be stored outside source control using appropriate environment configuration or secret-management facilities.
 
 ---
 
-# 🔄 Development Roadmap
+# 🧰 Technology Stack
 
-## ✅ Part 1 — Planning & Database
+The following technologies form the RaceDay development environment.
 
-* [x] Database design
-* [x] SQL database script
-* [x] Entity Relationship Diagram
-* [x] RESTful API endpoint specification
-* [x] Git repository
-* [x] GitHub repository
-* [x] Project documentation
-
-## 🚧 Part 2 — API Development
-
-Planned development includes:
-
-* [ ] ASP.NET Core Web API
-* [ ] Entity Framework Core
-* [ ] SQL Server integration
-* [ ] Authentication
-* [ ] Authorisation
-* [ ] User management
-* [ ] Event management
-* [ ] Category management
-* [ ] Enrolment management
-* [ ] Results management
-* [ ] Payment functionality
-* [ ] Document management
-* [ ] Weather information
-* [ ] Unit testing
-* [ ] CI/CD pipeline
-
-## 🔮 Future Development
-
-Future stages will continue expanding RaceDay into a complete event management solution.
-
-This may include additional application functionality, validation, security improvements, testing, deployment and user-interface development according to the project requirements.
-
----
-
-# 📦 Part 1 Documentation
-
-All current Part 1 documentation is available inside the `docs` directory.
-
-| File                                | Description                        |
-| ----------------------------------- | ---------------------------------- |
-| 📄 `RaceDay_API_Endpoint_Plan.docx` | RESTful API endpoint specification |
-| 🗄️ `RaceDay_Database.sql`          | RaceDay database SQL script        |
-| 🖼️ `RaceDay_ERD.png`               | Entity Relationship Diagram        |
-
----
-
-# 🌱 Version Control
-
-Git is used throughout the RaceDay project to maintain a history of development changes.
-
-Meaningful commits are used to record major project additions and changes.
-
-### Current Commit History
-
-```text
-Add comprehensive RaceDay project documentation
-Add RaceDay Part 1 database, ERD and API specification
-```
-
-The repository will continue to be updated as each development stage is completed.
-
----
-
-# 📊 Current Project Status
-
-### 🟢 Part 1 — Completed
-
-The current RaceDay repository contains the completed Part 1 planning and database documentation.
-
-**Completed:**
-
-* ✅ Database design
-* ✅ SQL database script
-* ✅ Entity Relationship Diagram
-* ✅ RESTful API endpoint specification
-* ✅ Git version control
-* ✅ GitHub repository
-* ✅ Project README
-
-**Next:**
-
-> 🚀 Begin implementation of the RaceDay ASP.NET Core Web API.
-
----
-
-# 👨‍💻 Developer
-
-**Faizaan Emmam**
-
-RaceDay Event Management System
-Portfolio of Evidence Project
-
----
-
-## 📜 Project Repository
-
-This repository contains the development work, documentation and source code for the **RaceDay Event Management System**.
-
-The repository will be maintained and updated throughout the remaining development stages of the project.
-
----
-
-**🏃 RaceDay — Manage Events. Manage Participants. Manage Results.**
+| Technology | Application |
+|---|---|
 
 
